@@ -1,7 +1,7 @@
 /*
-Name: Yashwith Behara
-PRN: 23070126151
-Batch: AIML B3
+Name: Sehajdeep Singh Sikka
+PRN: 23070126119
+Batch: AIML B2
 */
 
 import java.util.Scanner; // Importing Scanner for user input
