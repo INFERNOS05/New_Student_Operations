@@ -4,24 +4,19 @@ PRN: 23070126119
 Batch: AIML B2
 */
 
-import java.util.Scanner; // Importing Scanner for user input
+import java.util.Scanner; // Importing Scanner for reading user input
 
 public class Main {
 
-    // Main method - Entry point of the program
+    // Main method: Acts as the entry point for the Student Data Entry System
     public static void main(String[] args) {
-        // Create Scanner object for taking input from the user
-        Scanner sc = new Scanner(System.in);
+        Scanner sc = new Scanner(System.in); // Scanner instance to capture user input from the console
+        StudentManager manager = new StudentManager(); // Instance of StudentManager to perform operations on student records
+        int choice; // Variable to store user's menu choice
 
-        // Create an instance of StudentManager to manage students
-        StudentManager manager = new StudentManager();
-
-        // Variable to store user's menu choice
-        int choice;
-
-        // Menu loop - runs until the user chooses to exit (choice == 0)
+        // Loop continues until user selects the Exit option (choice = 0)
         do {
-            // Display the menu to the user
+            // Displaying the main menu
             System.out.println("\n===== Student Data Entry Menu =====");
             System.out.println("1. Add Student");
             System.out.println("2. Display All Students");
@@ -32,29 +27,41 @@ public class Main {
             System.out.println("7. Delete Student");
             System.out.println("0. Exit");
 
-            // Prompt the user for input and read the choice
+            // Prompt user for a menu option
             System.out.print("Enter your choice: ");
-            choice = sc.nextInt(); // Read the choice as an integer
-            sc.nextLine(); // clear buffer
+            choice = sc.nextInt();      // Read numeric menu input
+            sc.nextLine();              // Consume newline character left by nextInt()
 
-            // Switch statement to execute corresponding action based on the user's choice
-            switch (choice) {
-                case 1 -> manager.addStudent(sc); // Calls addStudent method
-                case 2 -> manager.displayStudents(); // Calls displayStudents method
-                case 3 -> manager.searchByPRN(sc); // Calls searchByPRN method
-                case 4 -> manager.searchByName(sc); // Calls searchByName method
-                case 5 -> manager.searchByPosition(sc); // Calls searchByPosition method
-                case 6 -> manager.updateStudent(sc); // Calls updateStudent method
-                case 7 -> manager.deleteStudent(sc); // Calls deleteStudent method
-                case 0 -> System.out.println("Exiting..."); // Exits the program
-                default -> System.out.println("Invalid choice!"); // Handles invalid choices
+            try {
+                // Switch expression (Java 14+ syntax) to route user action
+                switch (choice) {
+                    case 1 -> manager.addStudent(sc);        // Adds a new student, may throw custom validation exceptions
+                    case 2 -> manager.displayStudents();     // Displays all students in the system
+                    case 3 -> manager.searchByPRN(sc);       // Searches a student by PRN number
+                    case 4 -> manager.searchByName(sc);      // Searches students by name
+                    case 5 -> manager.searchByPosition(sc);  // Displays student at a particular index/position
+                    case 6 -> manager.updateStudent(sc);     // Updates an existing student, may throw validation exceptions
+                    case 7 -> manager.deleteStudent(sc);     // Deletes a student record by PRN
+                    case 0 -> System.out.println("Exiting..."); // Exits the program
+                    default -> System.out.println("Invalid choice!"); // Handles invalid menu choices
+                }
+            } catch (DuplicatePRNException e) {
+                // Handles scenario where a duplicate PRN is being inserted
+                System.out.println("Error: Duplicate PRN entered. " + e.getMessage());
+            } catch (InvalidCGPAException e) {
+                // Handles case when CGPA is not within valid numeric bounds
+                System.out.println("Error: Invalid CGPA provided. " + e.getMessage());
+            } catch (InvalidBatchFormatException e) {
+                // Handles improperly formatted batch input (e.g., "B2", "A1" expected)
+                System.out.println("Error: Invalid Batch format. " + e.getMessage());
+            } catch (Exception e) {
+                // Generic fallback for any unexpected exceptions
+                System.out.println("Unexpected error: " + e.getMessage());
             }
 
-        // Continue looping the menu until the user selects "0" to exit
-        } while (choice != 0);
+        } while (choice != 0); // Loop terminates when user selects 0 (Exit)
 
-        // Close the scanner to release resources
-        sc.close();
+        sc.close(); // Release Scanner resource
     }
 }
 
